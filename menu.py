@@ -1,5 +1,5 @@
 import pygame
-from .colors import WHITE
+from colors import WHITE
 
 MENU_SURFACE_SIZE = (200, 150)
 

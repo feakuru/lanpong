@@ -1,7 +1,8 @@
 import pygame
 
-from .colors import *
-from . import menu
+from config import *
+from colors import *
+import menu
 
 
 def move_left_pad(amount):
