@@ -35,6 +35,16 @@ while playing:
     pygame.draw.rect(screen, LIGHT_BLUE, (*LEFT_PAD_POSITION, *PAD_SIZE))
     # draw pad 2
     pygame.draw.rect(screen, GREEN, (*RIGHT_PAD_POSITION, *PAD_SIZE))
+    
+    #show menu
+    screen.blit(
+        menu.get_menu_surface(),
+        (
+            WINDOW_DIMENSIONS[0] // 2 - menu.MENU_SURFACE_SIZE[0] // 2,
+            WINDOW_DIMENSIONS[1] - menu.MENU_SURFACE_SIZE[1] - 20
+        )
+    )
+
     pygame.display.update()
     clock.tick(FPS)
 
