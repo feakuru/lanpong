@@ -1,0 +1,12 @@
+"""Game configuration constants."""
+
+GAME_TITLE = 'LAN PONG'
+FPS = 60
+WINDOW_DIMENSIONS = (1200, 800)
+PAD_SIZE = (20, 120)
+LEFT_PAD_POSITION = (20, (WINDOW_DIMENSIONS[1] // 2) - (PAD_SIZE[1] // 2))
+RIGHT_PAD_POSITION = (
+    WINDOW_DIMENSIONS[0] - PAD_SIZE[0] - 20,
+    (WINDOW_DIMENSIONS[1] // 2) - (PAD_SIZE[1] // 2)
+)
+MOVEMENT_SPEED = 10  # in pixels per frame
