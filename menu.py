@@ -3,7 +3,7 @@ import pygame
 from colors import WHITE, BLACK
 
 MENU_SURFACE_SIZE = (250, 50)
-MENU_ALPHA = 128  # 0 to 255
+MENU_ALPHA = 200  # 0 to 255
 
 def get_menu_surface():
     menu_surface = pygame.Surface(MENU_SURFACE_SIZE)
@@ -11,7 +11,7 @@ def get_menu_surface():
     menu_surface.set_alpha(MENU_ALPHA)
     font = pygame.font.Font(os.path.abspath('./fonts/tron.ttf'), 10)
     text_top = font.render("Q to quit", 1, BLACK)
-    text_bottom = font.render("W, S, up, down to control", 1, BLACK)
+    text_bottom = font.render("W, S / up, down to control", 1, BLACK)
     text_top_size = text_top.get_size()
     text_bottom_size = text_bottom.get_size()
     menu_surface.blit(
