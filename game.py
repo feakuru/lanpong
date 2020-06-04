@@ -10,12 +10,24 @@ def move_left_pad(amount):
     if 0 < LEFT_PAD_POSITION[1] + amount < WINDOW_DIMENSIONS[1] - PAD_SIZE[1]:
         LEFT_PAD_POSITION = (LEFT_PAD_POSITION[0], LEFT_PAD_POSITION[1] + amount)
 
+right_pad_moving_up = True
+def move_right_pad():
+    global RIGHT_PAD_POSITION, right_pad_moving_up
+    # get next position for the right pad
+    new_position = (
+        RIGHT_PAD_POSITION[0],
+        RIGHT_PAD_POSITION[1] + (
+            RIGHT_PAD_MOVEMENT_SPEED if right_pad_moving_up else (
+                - RIGHT_PAD_MOVEMENT_SPEED)
+        )
+    )
+    if 0 < new_position[1] < WINDOW_DIMENSIONS[1] - PAD_SIZE[1]:
+        RIGHT_PAD_POSITION = new_position
+    else:
+        right_pad_moving_up = not right_pad_moving_up
 
-def move_right_pad(amount):
-    global RIGHT_PAD_POSITION
-    if 0 < RIGHT_PAD_POSITION[1] + amount < WINDOW_DIMENSIONS[1] - PAD_SIZE[1]:
-        RIGHT_PAD_POSITION = (RIGHT_PAD_POSITION[0], RIGHT_PAD_POSITION[1] + amount)
-
+def move_ball():
+    pass
 
 # Actual game code starts here
 
@@ -35,6 +47,8 @@ while playing:
     pygame.draw.rect(screen, LIGHT_BLUE, (*LEFT_PAD_POSITION, *PAD_SIZE))
     # draw pad 2
     pygame.draw.rect(screen, GREEN, (*RIGHT_PAD_POSITION, *PAD_SIZE))
+    # draw ball
+    pygame.draw.circle(screen, WHITE, BALL_POSITION, BALL_RADIUS)
     
     #show menu
     screen.blit(
@@ -50,14 +64,17 @@ while playing:
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
-        move_left_pad(-MOVEMENT_SPEED)
+        move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
     elif keys[pygame.K_s]:
-        move_left_pad(MOVEMENT_SPEED)
+        move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
     if keys[pygame.K_UP]:
-        move_right_pad(-MOVEMENT_SPEED)
+        BALL_MOVEMENT_SPEED += BALL_MOVEMENT_SPEED_DELTA
     elif keys[pygame.K_DOWN]:
-        move_right_pad(MOVEMENT_SPEED)
+        BALL_MOVEMENT_SPEED -= BALL_MOVEMENT_SPEED_DELTA
+    
+    move_right_pad()
 
+    move_ball()
     events = pygame.event.get()
     for event in events:
         if (event.type == pygame.QUIT
