@@ -7,10 +7,17 @@ import menu
 
 def move_left_pad(amount):
     global LEFT_PAD_POSITION
-    if 0 < LEFT_PAD_POSITION[1] + amount < WINDOW_DIMENSIONS[1] - PAD_SIZE[1]:
-        LEFT_PAD_POSITION = (LEFT_PAD_POSITION[0], LEFT_PAD_POSITION[1] + amount)
+    if (
+            0
+            < LEFT_PAD_POSITION[1] + amount
+            < WINDOW_DIMENSIONS[1] - PAD_SIZE[1]):
+        LEFT_PAD_POSITION = (
+            LEFT_PAD_POSITION[0],
+            LEFT_PAD_POSITION[1] + amount
+        )
 
 right_pad_moving_up = True
+
 def move_right_pad():
     global RIGHT_PAD_POSITION, right_pad_moving_up
     # get next position for the right pad
@@ -27,7 +34,19 @@ def move_right_pad():
         right_pad_moving_up = not right_pad_moving_up
 
 def move_ball():
-    pass
+    global BALL_POSITION
+    new_ball_position = (
+        BALL_POSITION[0] + BALL_MOVEMENT_SPEED[0],
+        BALL_POSITION[1] + BALL_MOVEMENT_SPEED[1]
+    )
+    if (
+            0 
+            < new_ball_position[0] 
+            < WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2
+            and 0
+            < new_ball_position[1]
+            < WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
+        BALL_POSITION = new_ball_position
 
 # Actual game code starts here
 
@@ -68,9 +87,15 @@ while playing:
     elif keys[pygame.K_s]:
         move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
     if keys[pygame.K_UP]:
-        BALL_MOVEMENT_SPEED += BALL_MOVEMENT_SPEED_DELTA
+        BALL_MOVEMENT_SPEED = (
+            BALL_MOVEMENT_SPEED[0],
+            BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA, 
+        )
     elif keys[pygame.K_DOWN]:
-        BALL_MOVEMENT_SPEED -= BALL_MOVEMENT_SPEED_DELTA
+        BALL_MOVEMENT_SPEED = (
+            BALL_MOVEMENT_SPEED[0],
+            BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA,
+        )
     
     move_right_pad()
 
