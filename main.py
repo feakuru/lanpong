@@ -12,4 +12,5 @@ if args.master:
     pass
 else:
     from game import run_game_loop
-    run_game_loop()
+    from utils import get_master_address
+    run_game_loop(master_address=get_master_address())

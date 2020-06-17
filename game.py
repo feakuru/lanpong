@@ -48,7 +48,7 @@ def move_ball():
             < WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
         BALL_POSITION = new_ball_position
 
-def run_game_loop():
+def run_game_loop(master_address='localhost:5000'):
     pygame.init()
 
     screen = pygame.display.set_mode(WINDOW_DIMENSIONS, pygame.RESIZABLE)
