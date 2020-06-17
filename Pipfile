@@ -10,6 +10,9 @@ autopep8 = "*"
 [packages]
 pygame = "*"
 ifcfg = "*"
+python-socketio = "*"
+asyncio = "*"
+aiohttp = "*"
 
 [requires]
 python_version = "3.8"

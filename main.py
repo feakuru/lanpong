@@ -9,7 +9,8 @@ parser.add_argument('--master', dest='master',
 args = parser.parse_args()
 
 if args.master:
-    pass
+    from server import run_server
+    run_server()
 else:
     from game import run_game_loop
     from utils import get_master_address
