@@ -22,6 +22,7 @@ def get_master_address():
         if (
             (
                 name.lower().startswith('eth')
+                or name.lower().startswith('wlp')
                 or 'LAN' in name
             )
             and iface['inet']
