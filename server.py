@@ -30,4 +30,4 @@ def run_server():
 
     app = web.Application()
     sio.attach(app)
-    web.run_app(app)
+    web.run_app(app, port='5005')
