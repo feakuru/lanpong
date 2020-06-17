@@ -15,10 +15,17 @@ def is_open(ip, port):
 
 def get_master_address():
     ifaces = ifcfg.interfaces()
+    print(ifaces)
     iface = [
         iface
         for name, iface in ifaces.items()
-        if name.startswith('eth')
+        if (
+            (
+                name.lower().startswith('eth')
+                or 'LAN' in name
+            )
+            and iface['inet']
+        )
     ][0]
 
     ip_range = []

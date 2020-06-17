@@ -5,6 +5,7 @@ parser.add_argument('--master', dest='master',
                     action='store_const',
                     const=True, default=False,
                     help='run in master mode (default: slave)')
+# TODO accept master ip
 
 args = parser.parse_args()
 
