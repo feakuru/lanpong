@@ -1,4 +1,5 @@
 import pygame
+import socketio
 
 from config import *
 from colors import *
@@ -49,6 +50,35 @@ def move_ball():
         BALL_POSITION = new_ball_position
 
 def run_game_loop(master_address='localhost:5000'):
+    sio = socketio.AsyncClient()
+    sio.connect('http://' + master_address)
+    client_orientation = 'LEFT' # default
+    # TODO get orientation from server
+
+    @sio.on('move_left_pad_down')
+    def move_left_pad_down(data):
+        move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
+    
+    @sio.on('move_left_pad_up')
+    def move_left_pad_up(data):
+        move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
+    
+    @sio.on('speed_ball_up')
+    def speed_ball_up(data):
+        global BALL_MOVEMENT_SPEED
+        BALL_MOVEMENT_SPEED = (
+            BALL_MOVEMENT_SPEED[0],
+            BALL_MOVEMENT_SPEED[1] + BALL_MOVEMENT_SPEED_DELTA,
+        )
+
+    @sio.on('speed_ball_down')
+    def speed_ball_down(data):
+        global BALL_MOVEMENT_SPEED
+        BALL_MOVEMENT_SPEED = (
+            BALL_MOVEMENT_SPEED[0],
+            BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA,
+        )
+
     pygame.init()
 
     screen = pygame.display.set_mode(WINDOW_DIMENSIONS, pygame.RESIZABLE)
@@ -81,20 +111,16 @@ def run_game_loop(master_address='localhost:5000'):
         clock.tick(FPS)
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
-        elif keys[pygame.K_s]:
-            move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
-        if keys[pygame.K_UP]:
-            BALL_MOVEMENT_SPEED = (
-                BALL_MOVEMENT_SPEED[0],
-                BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA, 
-            )
-        elif keys[pygame.K_DOWN]:
-            BALL_MOVEMENT_SPEED = (
-                BALL_MOVEMENT_SPEED[0],
-                BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA,
-            )
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
+            if client_orientation == 'LEFT':
+                sio.emit('left_slave_up')
+            elif client_orientation == 'RIGHT':
+                sio.emit('right_slave_up')
+        if keys[pygame.K_s]or keys[pygame.K_DOWN]:
+            if client_orientation == 'LEFT':
+                sio.emit('left_slave_down')
+            elif client_orientation == 'RIGHT':
+                sio.emit('right_slave_down')
         
         move_right_pad()
 
