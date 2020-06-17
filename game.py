@@ -48,65 +48,64 @@ def move_ball():
             < WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
         BALL_POSITION = new_ball_position
 
-# Actual game code starts here
+def run_game_loop():
+    pygame.init()
 
-pygame.init()
+    screen = pygame.display.set_mode(WINDOW_DIMENSIONS, pygame.RESIZABLE)
+    pygame.display.set_caption(GAME_TITLE)
 
-screen = pygame.display.set_mode(WINDOW_DIMENSIONS, pygame.RESIZABLE)
-pygame.display.set_caption(GAME_TITLE)
+    clock = pygame.time.Clock()
 
-clock = pygame.time.Clock()
+    playing = True
 
-playing = True
+    while playing:
 
-while playing:
-
-    screen.fill(BLACK)
-    # draw pad 1
-    pygame.draw.rect(screen, LIGHT_BLUE, (*LEFT_PAD_POSITION, *PAD_SIZE))
-    # draw pad 2
-    pygame.draw.rect(screen, GREEN, (*RIGHT_PAD_POSITION, *PAD_SIZE))
-    # draw ball
-    pygame.draw.circle(screen, WHITE, BALL_POSITION, BALL_RADIUS)
-    
-    #show menu
-    screen.blit(
-        menu.get_menu_surface(),
-        (
-            WINDOW_DIMENSIONS[0] // 2 - menu.MENU_SURFACE_SIZE[0] // 2,
-            WINDOW_DIMENSIONS[1] - menu.MENU_SURFACE_SIZE[1] - 20
-        )
-    )
-
-    pygame.display.update()
-    clock.tick(FPS)
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
-    elif keys[pygame.K_s]:
-        move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
-    if keys[pygame.K_UP]:
-        BALL_MOVEMENT_SPEED = (
-            BALL_MOVEMENT_SPEED[0],
-            BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA, 
-        )
-    elif keys[pygame.K_DOWN]:
-        BALL_MOVEMENT_SPEED = (
-            BALL_MOVEMENT_SPEED[0],
-            BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA,
-        )
-    
-    move_right_pad()
-
-    move_ball()
-    events = pygame.event.get()
-    for event in events:
-        if (event.type == pygame.QUIT
-                or (
-                    event.type == pygame.KEYDOWN
-                    and event.key == pygame.K_q)):
-            pygame.quit()
-            playing = False
+        screen.fill(BLACK)
+        # draw pad 1
+        pygame.draw.rect(screen, LIGHT_BLUE, (*LEFT_PAD_POSITION, *PAD_SIZE))
+        # draw pad 2
+        pygame.draw.rect(screen, GREEN, (*RIGHT_PAD_POSITION, *PAD_SIZE))
+        # draw ball
+        pygame.draw.circle(screen, WHITE, BALL_POSITION, BALL_RADIUS)
         
-    
+        #show menu
+        screen.blit(
+            menu.get_menu_surface(),
+            (
+                WINDOW_DIMENSIONS[0] // 2 - menu.MENU_SURFACE_SIZE[0] // 2,
+                WINDOW_DIMENSIONS[1] - menu.MENU_SURFACE_SIZE[1] - 20
+            )
+        )
+
+        pygame.display.update()
+        clock.tick(FPS)
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w]:
+            move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
+        elif keys[pygame.K_s]:
+            move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
+        if keys[pygame.K_UP]:
+            BALL_MOVEMENT_SPEED = (
+                BALL_MOVEMENT_SPEED[0],
+                BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA, 
+            )
+        elif keys[pygame.K_DOWN]:
+            BALL_MOVEMENT_SPEED = (
+                BALL_MOVEMENT_SPEED[0],
+                BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA,
+            )
+        
+        move_right_pad()
+
+        move_ball()
+        events = pygame.event.get()
+        for event in events:
+            if (event.type == pygame.QUIT
+                    or (
+                        event.type == pygame.KEYDOWN
+                        and event.key == pygame.K_q)):
+                pygame.quit()
+                playing = False
+            
+        
