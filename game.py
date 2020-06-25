@@ -35,11 +35,13 @@ def move_right_pad():
         right_pad_moving_up = not right_pad_moving_up
 
 def move_ball():
-    global BALL_POSITION
+    global BALL_POSITION, BALL_MOVEMENT_SPEED
     new_ball_position = (
         BALL_POSITION[0] + BALL_MOVEMENT_SPEED[0],
         BALL_POSITION[1] + BALL_MOVEMENT_SPEED[1]
     )
+
+    # handle screen borders
     if (
             0 
             < new_ball_position[0] 
@@ -48,6 +50,48 @@ def move_ball():
             < new_ball_position[1]
             < WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
         BALL_POSITION = new_ball_position
+    else:
+        BALL_POSITION = (
+            WINDOW_DIMENSIONS[0] // 2,
+            WINDOW_DIMENSIONS[1] // 2
+        )
+        BALL_MOVEMENT_SPEED = (10, 0)
+    
+    # handle right pad
+    if (
+        BALL_POSITION[0] >= RIGHT_PAD_POSITION[0] - BALL_RADIUS
+        and RIGHT_PAD_POSITION[1] 
+        <= BALL_POSITION[1]
+        <= RIGHT_PAD_POSITION[1] + PAD_SIZE[1]
+    ):
+        BALL_MOVEMENT_SPEED = (
+            -BALL_MOVEMENT_SPEED[0],
+            BALL_MOVEMENT_SPEED[1] + (
+                BALL_POSITION[1] - (
+                    RIGHT_PAD_POSITION[1] + PAD_SIZE[1] // 2
+                )
+            ) // 16
+        )
+
+    # handle left pad
+    if (
+        BALL_POSITION[0] <= (
+            LEFT_PAD_POSITION[0]
+            + PAD_SIZE[0]
+            + BALL_RADIUS
+        )
+        and LEFT_PAD_POSITION[1]
+        <= BALL_POSITION[1]
+        <= LEFT_PAD_POSITION[1] + PAD_SIZE[1]
+    ):
+        BALL_MOVEMENT_SPEED = (
+            -BALL_MOVEMENT_SPEED[0],
+            BALL_MOVEMENT_SPEED[1] + (
+                BALL_POSITION[1] - (
+                    LEFT_PAD_POSITION[1] + PAD_SIZE[1] // 2
+                )
+            ) // 16
+        )
 
 client_orientation = 'WRONG' # default
 
