@@ -3,10 +3,7 @@ import socketio
 from aiohttp import web
 
 def run_server():
-    sio = socketio.AsyncServer(
-        async_mode='aiohttp',
-        logger=True
-    )
+    sio = socketio.AsyncServer(logger=True)
 
     slaves = []
 

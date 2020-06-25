@@ -52,7 +52,7 @@ def move_ball():
 client_orientation = 'WRONG' # default
 
 async def run_game_loop(master_address='localhost:5000'):
-    sio = socketio.AsyncClient()
+    sio = socketio.AsyncClient(logger=True)
 
     @sio.event
     async def orient(data):
