@@ -51,7 +51,6 @@ def move_ball():
 
 async def run_game_loop(master_address='localhost:5000'):
     sio = socketio.AsyncClient()
-    await sio.connect('http://' + master_address + ':5005')
     client_orientation = 'WRONG' # default
 
     @sio.event
@@ -83,6 +82,8 @@ async def run_game_loop(master_address='localhost:5000'):
             BALL_MOVEMENT_SPEED[0],
             BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA,
         )
+    
+    await sio.connect('http://' + master_address + ':5005')
 
     pygame.init()
 
@@ -137,6 +138,5 @@ async def run_game_loop(master_address='localhost:5000'):
                         event.type == pygame.KEYDOWN
                         and event.key == pygame.K_q)):
                 pygame.quit()
+                await sio.disconnect()
                 playing = False
-            
-        

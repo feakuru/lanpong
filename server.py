@@ -1,9 +1,17 @@
-import asyncio
+from time import sleep
 import socketio
 from aiohttp import web
 
 def run_server():
-    sio = socketio.AsyncServer(async_mode='aiohttp')
+    sio = socketio.AsyncServer(
+        async_mode='aiohttp',
+        always_connect=True,
+        logger=True
+    )
+
+    app = web.Application()
+    sio.attach(app)
+
     slaves = []
 
     @sio.event
@@ -22,6 +30,7 @@ def run_server():
                     len(slaves)
                 )
             )
+        return 200, 'OK'
 
     @sio.on('left_slave_up')
     async def move_left_pad_up(sid, data):
@@ -48,4 +57,4 @@ def run_server():
 
     app = web.Application()
     sio.attach(app)
-    web.run_app(app, port='5005')
+    web.run_app(app, host='127.0.0.1', port='5005')
