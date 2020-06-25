@@ -3,7 +3,6 @@ from aiohttp import web
 
 def run_server():
     sio = socketio.AsyncServer(async_mode='aiohttp')
-    # TODO index ehlo
     # TODO on connect: tell the client if they are left or right
 
     @sio.on('left_slave_up')

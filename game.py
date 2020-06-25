@@ -51,7 +51,8 @@ def move_ball():
 
 def run_game_loop(master_address='localhost:5000'):
     sio = socketio.AsyncClient()
-    sio.connect('http://' + master_address)
+    print(master_address)
+    sio.connect('http://' + master_address + ':5005')
     client_orientation = 'LEFT' # default
     # TODO get orientation from server
 
