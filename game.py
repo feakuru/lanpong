@@ -49,23 +49,27 @@ def move_ball():
             < WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
         BALL_POSITION = new_ball_position
 
-def run_game_loop(master_address='localhost:5000'):
+async def run_game_loop(master_address='localhost:5000'):
     sio = socketio.AsyncClient()
-    print(master_address)
-    sio.connect('http://' + master_address + ':5005')
-    client_orientation = 'LEFT' # default
-    # TODO get orientation from server
+    await sio.connect('http://' + master_address + ':5005')
+    client_orientation = 'WRONG' # default
+
+    @sio.event
+    async def orient(data):
+        print(data)
+        client_orientation = data['data']
+        print('Jolly good, I am {}!'.format(client_orientation))
 
     @sio.on('move_left_pad_down')
-    def move_left_pad_down(data):
+    async def move_left_pad_down(data):
         move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
     
     @sio.on('move_left_pad_up')
-    def move_left_pad_up(data):
+    async def move_left_pad_up(data):
         move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
     
     @sio.on('speed_ball_up')
-    def speed_ball_up(data):
+    async def speed_ball_up(data):
         global BALL_MOVEMENT_SPEED
         BALL_MOVEMENT_SPEED = (
             BALL_MOVEMENT_SPEED[0],
@@ -73,7 +77,7 @@ def run_game_loop(master_address='localhost:5000'):
         )
 
     @sio.on('speed_ball_down')
-    def speed_ball_down(data):
+    async def speed_ball_down(data):
         global BALL_MOVEMENT_SPEED
         BALL_MOVEMENT_SPEED = (
             BALL_MOVEMENT_SPEED[0],
@@ -114,14 +118,14 @@ def run_game_loop(master_address='localhost:5000'):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] or keys[pygame.K_UP]:
             if client_orientation == 'LEFT':
-                sio.emit('left_slave_up')
+                await sio.emit('left_slave_up')
             elif client_orientation == 'RIGHT':
-                sio.emit('right_slave_up')
+                await sio.emit('right_slave_up')
         if keys[pygame.K_s]or keys[pygame.K_DOWN]:
             if client_orientation == 'LEFT':
-                sio.emit('left_slave_down')
+                await sio.emit('left_slave_down')
             elif client_orientation == 'RIGHT':
-                sio.emit('right_slave_down')
+                await sio.emit('right_slave_down')
         
         move_right_pad()
 
