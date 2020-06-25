@@ -5,12 +5,8 @@ from aiohttp import web
 def run_server():
     sio = socketio.AsyncServer(
         async_mode='aiohttp',
-        always_connect=True,
         logger=True
     )
-
-    app = web.Application()
-    sio.attach(app)
 
     slaves = []
 
@@ -34,6 +30,7 @@ def run_server():
 
     @sio.on('left_slave_up')
     async def move_left_pad_up(sid, data):
+        print('left slave up!')
         await sio.emit('move_left_pad_up', {})
         return 200, "OK"
 

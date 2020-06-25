@@ -49,14 +49,16 @@ def move_ball():
             < WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
         BALL_POSITION = new_ball_position
 
+client_orientation = 'WRONG' # default
+
 async def run_game_loop(master_address='localhost:5000'):
     sio = socketio.AsyncClient()
-    client_orientation = 'WRONG' # default
 
     @sio.event
     async def orient(data):
         print(data)
-        client_orientation = data['data']
+        global client_orientation
+        client_orientation = data['data'].upper()
         print('Jolly good, I am {}!'.format(client_orientation))
 
     @sio.on('move_left_pad_down')
