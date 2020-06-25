@@ -1,7 +1,7 @@
 """Game configuration constants."""
 
 GAME_TITLE = 'LAN PONG'
-FPS = 60
+FPS = 30
 WINDOW_DIMENSIONS = (600, 400)
 
 # Pads
