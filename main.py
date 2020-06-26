@@ -1,6 +1,5 @@
 import sys
 import argparse
-import asyncio
 
 parser = argparse.ArgumentParser(description='A ping-pong over the LAN.')
 parser.add_argument('--master', dest='master',
@@ -22,5 +21,4 @@ else:
     if not args.master_address:
         print('Please provide a master address like this: --connect=1.1.1.1')
         sys.exit(1)
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run_game_loop(master_address=args.master_address))
+    run_game_loop(master_address=args.master_address)
