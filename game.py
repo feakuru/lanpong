@@ -1,3 +1,4 @@
+import time
 import pygame
 import socketio
 
@@ -143,10 +144,12 @@ def run_game_loop(master_address='localhost:5000'):
     while playing:
 
         screen.fill(BLACK)
-        # draw pad 1
-        pygame.draw.rect(screen, LIGHT_BLUE, (*LEFT_PAD_POSITION, *PAD_SIZE))
-        # draw pad 2
-        pygame.draw.rect(screen, GREEN, (*RIGHT_PAD_POSITION, *PAD_SIZE))
+        if client_orientation in ('LEFT', 'WRONG'):
+            # draw left pad
+            pygame.draw.rect(screen, LIGHT_BLUE, (*LEFT_PAD_POSITION, *PAD_SIZE))
+        if client_orientation in ('RIGHT', 'WRONG'):
+            # draw right pad
+            pygame.draw.rect(screen, GREEN, (*RIGHT_PAD_POSITION, *PAD_SIZE))
         # draw ball
         pygame.draw.circle(screen, WHITE, BALL_POSITION, BALL_RADIUS)
         
@@ -163,12 +166,14 @@ def run_game_loop(master_address='localhost:5000'):
         clock.tick(FPS)
 
         keys = pygame.key.get_pressed()
+
         if keys[pygame.K_w] or keys[pygame.K_UP]:
             if client_orientation == 'LEFT':
                 sio.emit('left_slave_up')
             elif client_orientation == 'RIGHT':
                 sio.emit('right_slave_up')
-        if keys[pygame.K_s]or keys[pygame.K_DOWN]:
+
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
             if client_orientation == 'LEFT':
                 sio.emit('left_slave_down')
             elif client_orientation == 'RIGHT':
@@ -184,5 +189,5 @@ def run_game_loop(master_address='localhost:5000'):
                         event.type == pygame.KEYDOWN
                         and event.key == pygame.K_q)):
                 playing = False
-                pygame.quit()
                 sio.disconnect()
+                pygame.quit()
