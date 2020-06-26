@@ -14,6 +14,7 @@ def run_server():
             print('Connected to left slave {}'.format(sid))
         elif len(slaves) == 2:
             await sio.emit('orient', {'data': 'right'}, room=sid)
+            await sio.emit('start')
             print('Connected to right slave {}'.format(sid))
         else:
             print(

@@ -99,8 +99,10 @@ def move_ball():
 
 client_orientation = 'WRONG' # default
 score = 0 # starting
+playing = False
 
 def run_game_loop(master_address='localhost:5000'):
+    global playing
     sio = socketio.Client(logger=True)
 
     @sio.event
@@ -109,6 +111,11 @@ def run_game_loop(master_address='localhost:5000'):
         global client_orientation
         client_orientation = data['data'].upper()
         print('Jolly good, I am {}!'.format(client_orientation))
+
+    @sio.event
+    def start():
+        global playing
+        playing = True
 
     @sio.on('move_left_pad_down')
     def move_left_pad_down():
@@ -167,7 +174,8 @@ def run_game_loop(master_address='localhost:5000'):
 
     clock = pygame.time.Clock()
 
-    playing = True
+    while not playing:
+        clock.tick(FPS) # waiting for start event
 
     while playing:
 
