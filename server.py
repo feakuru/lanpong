@@ -24,10 +24,15 @@ def run_server():
                 )
             )
         return 200, 'OK'
+    
+    @sio.event
+    async def disconnect(sid):
+        # Do this if you want to break the left/right logic on disconnect
+        # slaves.remove(sid)
+        print('Client {} disconnected.'.format(sid))
 
     @sio.on('left_slave_up')
     async def move_left_pad_up(sid, data):
-        print('left slave up!')
         await sio.emit('move_left_pad_up', {})
         return 200, "OK"
 
