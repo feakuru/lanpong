@@ -1,3 +1,4 @@
+import math
 import time
 import pygame
 import socketio
@@ -111,26 +112,50 @@ def run_game_loop(master_address='localhost:5000'):
 
     @sio.on('move_left_pad_down')
     def move_left_pad_down():
-        move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
+        move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
     
     @sio.on('move_left_pad_up')
     def move_left_pad_up():
-        move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
+        move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
     
     @sio.on('speed_ball_up')
     def speed_ball_up():
         global BALL_MOVEMENT_SPEED
+
+        ball_movement_speed_vector_size = math.sqrt(
+            BALL_MOVEMENT_SPEED[0] ** 2
+            + BALL_MOVEMENT_SPEED[1] ** 2
+        )
+        multiplier = 1 + BALL_MOVEMENT_SPEED_DELTA / (
+            ball_movement_speed_vector_size
+            or BALL_MOVEMENT_SPEED_DELTA + 1
+        )
+        if multiplier <= 0:
+            multiplier = 0.5
+
         BALL_MOVEMENT_SPEED = (
-            BALL_MOVEMENT_SPEED[0],
-            BALL_MOVEMENT_SPEED[1] + BALL_MOVEMENT_SPEED_DELTA,
+            math.ceil(BALL_MOVEMENT_SPEED[0] * multiplier),
+            math.ceil(BALL_MOVEMENT_SPEED[1] * multiplier),
         )
 
     @sio.on('speed_ball_down')
     def speed_ball_down():
         global BALL_MOVEMENT_SPEED
+
+        ball_movement_speed_vector_size = math.sqrt(
+            BALL_MOVEMENT_SPEED[0] ** 2
+            + BALL_MOVEMENT_SPEED[1] ** 2
+        )
+        multiplier = 1 - BALL_MOVEMENT_SPEED_DELTA / (
+            ball_movement_speed_vector_size
+            or BALL_MOVEMENT_SPEED_DELTA + 1
+        )
+        if multiplier <= 0:
+            multiplier = 0.5
+        
         BALL_MOVEMENT_SPEED = (
-            BALL_MOVEMENT_SPEED[0],
-            BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA,
+            math.ceil(BALL_MOVEMENT_SPEED[0] * multiplier),
+            math.ceil(BALL_MOVEMENT_SPEED[1] * multiplier),
         )
     
     sio.connect('http://' + master_address + ':5005')
