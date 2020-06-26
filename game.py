@@ -95,26 +95,26 @@ def move_ball():
 
 client_orientation = 'WRONG' # default
 
-async def run_game_loop(master_address='localhost:5000'):
-    sio = socketio.AsyncClient(logger=True)
+def run_game_loop(master_address='localhost:5000'):
+    sio = socketio.Client(logger=True)
 
     @sio.event
-    async def orient(data):
+    def orient(data):
         print(data)
         global client_orientation
         client_orientation = data['data'].upper()
         print('Jolly good, I am {}!'.format(client_orientation))
 
     @sio.on('move_left_pad_down')
-    async def move_left_pad_down(data):
+    def move_left_pad_down():
         move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
     
     @sio.on('move_left_pad_up')
-    async def move_left_pad_up(data):
+    def move_left_pad_up():
         move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
     
     @sio.on('speed_ball_up')
-    async def speed_ball_up(data):
+    def speed_ball_up():
         global BALL_MOVEMENT_SPEED
         BALL_MOVEMENT_SPEED = (
             BALL_MOVEMENT_SPEED[0],
@@ -122,14 +122,14 @@ async def run_game_loop(master_address='localhost:5000'):
         )
 
     @sio.on('speed_ball_down')
-    async def speed_ball_down(data):
+    def speed_ball_down():
         global BALL_MOVEMENT_SPEED
         BALL_MOVEMENT_SPEED = (
             BALL_MOVEMENT_SPEED[0],
             BALL_MOVEMENT_SPEED[1] - BALL_MOVEMENT_SPEED_DELTA,
         )
     
-    await sio.connect('http://' + master_address + ':5005')
+    sio.connect('http://' + master_address + ':5005')
 
     pygame.init()
 
@@ -165,14 +165,14 @@ async def run_game_loop(master_address='localhost:5000'):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] or keys[pygame.K_UP]:
             if client_orientation == 'LEFT':
-                await sio.emit('left_slave_up')
+                sio.emit('left_slave_up')
             elif client_orientation == 'RIGHT':
-                await sio.emit('right_slave_up')
+                sio.emit('right_slave_up')
         if keys[pygame.K_s]or keys[pygame.K_DOWN]:
             if client_orientation == 'LEFT':
-                await sio.emit('left_slave_down')
+                sio.emit('left_slave_down')
             elif client_orientation == 'RIGHT':
-                await sio.emit('right_slave_down')
+                sio.emit('right_slave_down')
         
         move_right_pad()
 
@@ -183,6 +183,6 @@ async def run_game_loop(master_address='localhost:5000'):
                     or (
                         event.type == pygame.KEYDOWN
                         and event.key == pygame.K_q)):
-                pygame.quit()
-                await sio.disconnect()
                 playing = False
+                pygame.quit()
+                sio.disconnect()
