@@ -1,4 +1,3 @@
-from time import sleep
 import socketio
 from aiohttp import web
 
@@ -32,26 +31,26 @@ def run_server():
         print('Client {} disconnected.'.format(sid))
 
     @sio.on('left_slave_up')
-    async def move_left_pad_up(sid, data):
-        await sio.emit('move_left_pad_up', {})
+    async def move_left_pad_up(sid):
+        await sio.emit('move_left_pad_up')
         return 200, "OK"
 
 
     @sio.on('left_slave_down')
-    async def move_left_pad_down(sid, data):
-        await sio.emit('move_left_pad_down', {})
+    async def move_left_pad_down(sid):
+        await sio.emit('move_left_pad_down')
         return 200, "OK"
 
 
     @sio.on('right_slave_up')
-    async def speed_ball_up(sid, data):
-        await sio.emit('speed_ball_up', {})
+    async def speed_ball_up(sid):
+        await sio.emit('speed_ball_up')
         return 200, "OK"
 
 
     @sio.on('right_slave_down')
-    async def speed_ball_down(sid, data):
-        await sio.emit('speed_ball_down', {})
+    async def speed_ball_down(sid):
+        await sio.emit('speed_ball_down')
         return 200, "OK"
 
     app = web.Application()
