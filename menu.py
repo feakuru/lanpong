@@ -40,16 +40,16 @@ def get_score_surface(score):
     score_surface.fill(WHITE)
     score_surface.set_alpha(MENU_ALPHA)
     
-    font = pygame.font.Font(os.path.abspath('./fonts/tron.ttf'), 10)
+    font = pygame.font.Font(os.path.abspath('./fonts/tron.ttf'), 24)
     
     score_text = font.render(str(score), 1, BLACK)
     score_text_size = score_text.get_size()
     
-    menu_surface.blit(
+    score_surface.blit(
         score_text,
         (
             SCORE_SURFACE_SIZE[0] / 2 - score_text_size[0] / 2,
-            SCORE_SURFACE_SIZE[1] / 4 - score_text_size[1] / 2,
+            SCORE_SURFACE_SIZE[1] // 2 - score_text_size[1] / 2,
         )
     )
 

@@ -36,7 +36,7 @@ def move_right_pad():
         right_pad_moving_up = not right_pad_moving_up
 
 def move_ball():
-    global BALL_POSITION, BALL_MOVEMENT_SPEED
+    global BALL_POSITION, BALL_MOVEMENT_SPEED, score
     new_ball_position = (
         BALL_POSITION[0] + BALL_MOVEMENT_SPEED[0],
         BALL_POSITION[1] + BALL_MOVEMENT_SPEED[1]
@@ -52,6 +52,8 @@ def move_ball():
             < WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
         BALL_POSITION = new_ball_position
     else:
+        if new_ball_position[0] >= WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2:
+            score += 1
         BALL_POSITION = (
             WINDOW_DIMENSIONS[0] // 2,
             WINDOW_DIMENSIONS[1] // 2
@@ -95,6 +97,7 @@ def move_ball():
         )
 
 client_orientation = 'WRONG' # default
+score = 0 # starting
 
 def run_game_loop(master_address='localhost:5000'):
     sio = socketio.Client(logger=True)
@@ -153,12 +156,21 @@ def run_game_loop(master_address='localhost:5000'):
         # draw ball
         pygame.draw.circle(screen, WHITE, BALL_POSITION, BALL_RADIUS)
         
-        #show menu
+        # show menu
         screen.blit(
             menu.get_menu_surface(),
             (
                 WINDOW_DIMENSIONS[0] // 2 - menu.MENU_SURFACE_SIZE[0] // 2,
                 WINDOW_DIMENSIONS[1] - menu.MENU_SURFACE_SIZE[1] - 20
+            )
+        )
+
+        # show score
+        screen.blit(
+            menu.get_score_surface(score),
+            (
+                WINDOW_DIMENSIONS[0] // 2 - menu.SCORE_SURFACE_SIZE[0] // 2,
+                menu.SCORE_SURFACE_SIZE[1] // 2 + 20
             )
         )
 
