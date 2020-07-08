@@ -10,7 +10,7 @@ def get_menu_surface():
     menu_surface = pygame.Surface(MENU_SURFACE_SIZE)
     menu_surface.fill(WHITE)
     menu_surface.set_alpha(MENU_ALPHA)
-    font = pygame.font.Font(os.path.abspath('./fonts/bangers.ttf'), 10)
+    font = pygame.font.Font(os.path.abspath('./fonts/bangers.ttf'), 14)
     text_top = font.render("Q to quit", 1, BLACK)
     text_bottom = font.render("W, S / up, down to control", 1, BLACK)
     text_top_size = text_top.get_size()
@@ -38,7 +38,7 @@ def get_score_surface(score):
     score_surface.fill(WHITE)
     score_surface.set_alpha(MENU_ALPHA)
     
-    font = pygame.font.Font(os.path.abspath('./fonts/tron.ttf'), 24)
+    font = pygame.font.Font(os.path.abspath('./fonts/bangers.ttf'), 24)
     
     score_text = font.render(str(score), 1, BLACK)
     score_text_size = score_text.get_size()
