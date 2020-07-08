@@ -45,12 +45,16 @@ def move_ball():
 
     # handle screen borders
     if (
+            0 > new_ball_position[1]
+            or new_ball_position[1] > WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
+        BALL_MOVEMENT_SPEED = (
+            BALL_MOVEMENT_SPEED[0],
+            - BALL_MOVEMENT_SPEED[1]
+        )
+    if (
             0 
             < new_ball_position[0] 
-            < WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2
-            and 0
-            < new_ball_position[1]
-            < WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
+            < WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2):
         BALL_POSITION = new_ball_position
     else:
         if new_ball_position[0] >= WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2:
