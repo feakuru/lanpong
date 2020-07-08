@@ -110,7 +110,7 @@ def run_game_loop(master_address='localhost:5000'):
         print(data)
         global client_orientation
         client_orientation = data['data'].upper()
-        print('Jolly good, I am {}!'.format(client_orientation))
+        print('Jolly good, I am the {} pad!'.format(client_orientation))
 
     @sio.event
     def start():

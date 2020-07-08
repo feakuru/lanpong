@@ -10,9 +10,7 @@ def get_menu_surface():
     menu_surface = pygame.Surface(MENU_SURFACE_SIZE)
     menu_surface.fill(WHITE)
     menu_surface.set_alpha(MENU_ALPHA)
-    
-    font = pygame.font.Font(os.path.abspath('./fonts/tron.ttf'), 10)
-    
+    font = pygame.font.Font(os.path.abspath('./fonts/bangers.ttf'), 10)
     text_top = font.render("Q to quit", 1, BLACK)
     text_bottom = font.render("W, S / up, down to control", 1, BLACK)
     text_top_size = text_top.get_size()
