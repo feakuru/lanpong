@@ -56,10 +56,9 @@ def move_ball():
         if new_ball_position[0] >= WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2:
             score += 1
         BALL_POSITION = (
-            WINDOW_DIMENSIONS[0] // 2,
-            WINDOW_DIMENSIONS[1] // 2
+            RIGHT_PAD_POSITION[0] - BALL_RADIUS,
+            RIGHT_PAD_POSITION[1]
         )
-        BALL_MOVEMENT_SPEED = (10, 0)
     
     # handle right pad
     if (
