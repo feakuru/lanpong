@@ -104,7 +104,12 @@ client_orientation = 'WRONG' # default
 score = 0 # starting
 playing = False
 
-def run_game_loop(master_address='localhost:5000'):
+def run_game_loop(
+        master_address='localhost:5000',
+        override_show_left_pad=False,
+        override_hide_ball=False,
+        override_show_right_pad=False,
+        ):
     global playing
     sio = socketio.Client(logger=True)
 
@@ -183,14 +188,15 @@ def run_game_loop(master_address='localhost:5000'):
     while playing:
 
         screen.fill(BLACK)
-        if client_orientation in ('LEFT', 'WRONG'):
+        if client_orientation in ('LEFT', 'WRONG') or override_show_left_pad:
             # draw left pad
             pygame.draw.rect(screen, LIGHT_BLUE, (*LEFT_PAD_POSITION, *PAD_SIZE))
-        if client_orientation in ('RIGHT', 'WRONG'):
+        if client_orientation in ('RIGHT', 'WRONG') or override_show_right_pad:
             # draw right pad
             pygame.draw.rect(screen, GREEN, (*RIGHT_PAD_POSITION, *PAD_SIZE))
-        # draw ball
-        pygame.draw.circle(screen, WHITE, BALL_POSITION, BALL_RADIUS)
+        if not override_hide_ball:
+            # draw ball
+            pygame.draw.circle(screen, WHITE, BALL_POSITION, BALL_RADIUS)
         
         # show menu
         screen.blit(
