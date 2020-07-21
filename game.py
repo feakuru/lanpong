@@ -36,8 +36,8 @@ def move_right_pad():
     else:
         right_pad_moving_up = not right_pad_moving_up
 
-def move_ball():
-    global BALL_POSITION, BALL_MOVEMENT_SPEED, score
+def move_ball(sio):
+    global BALL_POSITION, BALL_MOVEMENT_SPEED, score, client_orientation
     new_ball_position = (
         BALL_POSITION[0] + BALL_MOVEMENT_SPEED[0],
         BALL_POSITION[1] + BALL_MOVEMENT_SPEED[1]
@@ -59,6 +59,8 @@ def move_ball():
     else:
         if new_ball_position[0] >= WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2:
             score += 1
+            if client_orientation == 'LEFT':
+                sio.emit('score_up')
         BALL_POSITION = (
             RIGHT_PAD_POSITION[0] - BALL_RADIUS * 2,
             RIGHT_PAD_POSITION[1] + PAD_SIZE[1] // 2
@@ -235,7 +237,7 @@ def run_game_loop(
         
         move_right_pad()
 
-        move_ball()
+        move_ball(sio)
         events = pygame.event.get()
         for event in events:
             if (event.type == pygame.QUIT
