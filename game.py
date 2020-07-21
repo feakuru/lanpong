@@ -154,6 +154,13 @@ def run_game_loop(
             math.ceil(BALL_MOVEMENT_SPEED[0] * multiplier),
             math.ceil(BALL_MOVEMENT_SPEED[1] * multiplier),
         )
+        if (
+            BALL_MOVEMENT_SPEED[0] == 0
+            and BALL_MOVEMENT_SPEED[1] == 0):
+            BALL_MOVEMENT_SPEED = (
+                int(math.ceil(math.sqrt(BALL_MOVEMENT_SPEED_DELTA))),
+                int(math.ceil(math.sqrt(BALL_MOVEMENT_SPEED_DELTA))),
+            )
 
     @sio.on('speed_ball_down')
     def speed_ball_down():
