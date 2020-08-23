@@ -203,7 +203,7 @@ def run_server():
                 'set_ball_position',
                 {'position': BALL_POSITION}
             )
-            sio.emit('set_score', {'score': score})
+            await sio.emit('set_score', {'score': score})
 
         @sio.on('right_slave_up')
         async def right_slave_up(sid):
