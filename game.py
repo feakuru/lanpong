@@ -7,101 +7,6 @@ from config import *
 from colors import *
 import menu
 
-
-def move_left_pad(amount):
-    global LEFT_PAD_POSITION
-    if (
-            0
-            < LEFT_PAD_POSITION[1] + amount
-            < WINDOW_DIMENSIONS[1] - PAD_SIZE[1]):
-        LEFT_PAD_POSITION = (
-            LEFT_PAD_POSITION[0],
-            LEFT_PAD_POSITION[1] + amount
-        )
-
-right_pad_moving_up = True
-
-def move_right_pad():
-    global RIGHT_PAD_POSITION, right_pad_moving_up
-    # get next position for the right pad
-    new_position = (
-        RIGHT_PAD_POSITION[0],
-        RIGHT_PAD_POSITION[1] + (
-            RIGHT_PAD_MOVEMENT_SPEED if right_pad_moving_up else (
-                - RIGHT_PAD_MOVEMENT_SPEED)
-        )
-    )
-    if 0 < new_position[1] < WINDOW_DIMENSIONS[1] - PAD_SIZE[1]:
-        RIGHT_PAD_POSITION = new_position
-    else:
-        right_pad_moving_up = not right_pad_moving_up
-
-def move_ball(sio):
-    global BALL_POSITION, BALL_MOVEMENT_SPEED, score, client_orientation
-    new_ball_position = (
-        BALL_POSITION[0] + BALL_MOVEMENT_SPEED[0],
-        BALL_POSITION[1] + BALL_MOVEMENT_SPEED[1]
-    )
-
-    # handle screen borders
-    if (
-            0 > new_ball_position[1]
-            or new_ball_position[1] > WINDOW_DIMENSIONS[1] - BALL_RADIUS / 2):
-        BALL_MOVEMENT_SPEED = (
-            BALL_MOVEMENT_SPEED[0],
-            - BALL_MOVEMENT_SPEED[1]
-        )
-    if (
-            0 
-            < new_ball_position[0] 
-            < WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2):
-        BALL_POSITION = new_ball_position
-    else:
-        if new_ball_position[0] >= WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2:
-            score += 1
-            if client_orientation == 'LEFT':
-                sio.emit('score_up')
-        BALL_POSITION = (
-            RIGHT_PAD_POSITION[0] - BALL_RADIUS * 2,
-            RIGHT_PAD_POSITION[1] + PAD_SIZE[1] // 2
-        )
-    
-    # handle right pad
-    if (
-        BALL_POSITION[0] >= RIGHT_PAD_POSITION[0] - BALL_RADIUS
-        and RIGHT_PAD_POSITION[1] 
-        <= BALL_POSITION[1]
-        <= RIGHT_PAD_POSITION[1] + PAD_SIZE[1]
-    ):
-        BALL_MOVEMENT_SPEED = (
-            -BALL_MOVEMENT_SPEED[0],
-            BALL_MOVEMENT_SPEED[1] + (
-                BALL_POSITION[1] - (
-                    RIGHT_PAD_POSITION[1] + PAD_SIZE[1] // 2
-                )
-            ) // 16
-        )
-
-    # handle left pad
-    if (
-        BALL_POSITION[0] <= (
-            LEFT_PAD_POSITION[0]
-            + PAD_SIZE[0]
-            + BALL_RADIUS
-        )
-        and LEFT_PAD_POSITION[1]
-        <= BALL_POSITION[1]
-        <= LEFT_PAD_POSITION[1] + PAD_SIZE[1]
-    ):
-        BALL_MOVEMENT_SPEED = (
-            -BALL_MOVEMENT_SPEED[0],
-            BALL_MOVEMENT_SPEED[1] + (
-                BALL_POSITION[1] - (
-                    LEFT_PAD_POSITION[1] + PAD_SIZE[1] // 2
-                )
-            ) // 16
-        )
-
 client_orientation = 'WRONG' # default
 score = 0 # starting
 playing = False
@@ -117,24 +22,40 @@ def run_game_loop(
 
     @sio.event
     def orient(data):
-        print(data)
         global client_orientation
         client_orientation = data['data'].upper()
-        print('Jolly good, I am the {} pad!'.format(client_orientation))
+        print('Initialized as the {} pad!'.format(client_orientation))
 
     @sio.event
     def start():
         global playing
         playing = True
 
-    @sio.on('move_left_pad_down')
-    def move_left_pad_down():
-        move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
-    
-    @sio.on('move_left_pad_up')
-    def move_left_pad_up():
-        move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
-    
+    @sio.on('move_left_pad')
+    def move_left_pad(data):
+        global LEFT_PAD_POSITION
+        LEFT_PAD_POSITION = data['position']
+
+    @sio.on('move_right_pad')
+    def move_right_pad(data):
+        global RIGHT_PAD_POSITION
+        RIGHT_PAD_POSITION = data['position']
+
+    @sio.on('set_ball_speed')
+    def set_ball_speed(data):
+        global BALL_MOVEMENT_SPEED
+        BALL_MOVEMENT_SPEED = data['speed']
+
+    @sio.on('set_ball_position')
+    def set_ball_position(data):
+        global BALL_POSITION
+        BALL_POSITION = data['position']
+
+    @sio.on('set_score')
+    def set_score(data):
+        global score
+        score = data['score']
+
     @sio.on('speed_ball_up')
     def speed_ball_up():
         global BALL_MOVEMENT_SPEED
@@ -241,10 +162,10 @@ def run_game_loop(
                 sio.emit('left_slave_down')
             elif client_orientation == 'RIGHT':
                 sio.emit('right_slave_down')
-        
-        move_right_pad()
 
-        move_ball(sio)
+        if client_orientation == 'RIGHT':
+            sio.emit('tick')
+
         events = pygame.event.get()
         for event in events:
             if (event.type == pygame.QUIT
