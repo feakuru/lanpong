@@ -10,7 +10,6 @@ parser.add_argument('--connect',
                     dest='master_address',
                     default=None,
                     help='master address to connect to')
-
 parser.add_argument('--show-left-pad',
                     dest='show_left_pad',
                     action='store_const',
