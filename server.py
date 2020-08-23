@@ -89,33 +89,67 @@ def move_ball():
 def speed_ball_up():
     global BALL_MOVEMENT_SPEED
 
-    delta_x = int(BALL_MOVEMENT_SPEED_DELTA / 2)
+    delta_x = int(
+        BALL_MOVEMENT_SPEED_DELTA
+        * (
+            BALL_MOVEMENT_SPEED[0]
+            / (
+                BALL_MOVEMENT_SPEED[0]
+                + BALL_MOVEMENT_SPEED[1]
+            )
+        )
+    )
     if BALL_MOVEMENT_SPEED[0] < 0:
         delta_x = -delta_x
 
-    delta_y = int(BALL_MOVEMENT_SPEED_DELTA / 2)
+    delta_y = int(
+        BALL_MOVEMENT_SPEED_DELTA
+        * (
+            BALL_MOVEMENT_SPEED[1]
+            / (
+                BALL_MOVEMENT_SPEED[0]
+                + BALL_MOVEMENT_SPEED[1]
+            )
+        )
+    )
     if BALL_MOVEMENT_SPEED[1] < 0:
         delta_y = -delta_y
 
     BALL_MOVEMENT_SPEED = (
-        BALL_MOVEMENT_SPEED[0] + delta_x,
-        BALL_MOVEMENT_SPEED[1] + delta_y,
+        min(15, BALL_MOVEMENT_SPEED[0] + delta_x),
+        min(2, BALL_MOVEMENT_SPEED[1] + delta_y),
     )
 
 def speed_ball_down():
     global BALL_MOVEMENT_SPEED
 
-    delta_x = int(BALL_MOVEMENT_SPEED_DELTA / 2)
+    delta_x = int(
+        BALL_MOVEMENT_SPEED_DELTA
+        * (
+            BALL_MOVEMENT_SPEED[0]
+            / (
+                BALL_MOVEMENT_SPEED[0]
+                + BALL_MOVEMENT_SPEED[1]
+            )
+        )
+    )
     if BALL_MOVEMENT_SPEED[0] < 0:
         delta_x = -delta_x
 
-    delta_y = int(BALL_MOVEMENT_SPEED_DELTA / 2)
-    if BALL_MOVEMENT_SPEED[1] < 0:
-        delta_y = -delta_y
+    delta_y = int(
+        BALL_MOVEMENT_SPEED_DELTA
+        * (
+            BALL_MOVEMENT_SPEED[1]
+            / (
+                BALL_MOVEMENT_SPEED[0]
+                + BALL_MOVEMENT_SPEED[1]
+            )
+        )
+    )
     
     BALL_MOVEMENT_SPEED = (
-        max(int(delta_x / 2), BALL_MOVEMENT_SPEED[0] - delta_x),
-        max(int(delta_y / 2), BALL_MOVEMENT_SPEED[1] - delta_y),
+        max(2, BALL_MOVEMENT_SPEED[0] - delta_x),
+        max(2, BALL_MOVEMENT_SPEED[1] - delta_y),
     )
 
 
