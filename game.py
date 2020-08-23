@@ -55,53 +55,6 @@ def run_game_loop(
     def set_score(data):
         global score
         score = data['score']
-
-    @sio.on('speed_ball_up')
-    def speed_ball_up():
-        global BALL_MOVEMENT_SPEED
-
-        ball_movement_speed_vector_size = math.sqrt(
-            BALL_MOVEMENT_SPEED[0] ** 2
-            + BALL_MOVEMENT_SPEED[1] ** 2
-        )
-        multiplier = 1 + BALL_MOVEMENT_SPEED_DELTA / (
-            ball_movement_speed_vector_size
-            or BALL_MOVEMENT_SPEED_DELTA + 1
-        )
-        if multiplier <= 0:
-            multiplier = 0.5
-
-        BALL_MOVEMENT_SPEED = (
-            math.ceil(BALL_MOVEMENT_SPEED[0] * multiplier),
-            math.ceil(BALL_MOVEMENT_SPEED[1] * multiplier),
-        )
-        if (
-            BALL_MOVEMENT_SPEED[0] == 0
-            and BALL_MOVEMENT_SPEED[1] == 0):
-            BALL_MOVEMENT_SPEED = (
-                int(math.ceil(math.sqrt(BALL_MOVEMENT_SPEED_DELTA))),
-                int(math.ceil(math.sqrt(BALL_MOVEMENT_SPEED_DELTA))),
-            )
-
-    @sio.on('speed_ball_down')
-    def speed_ball_down():
-        global BALL_MOVEMENT_SPEED
-
-        ball_movement_speed_vector_size = math.sqrt(
-            BALL_MOVEMENT_SPEED[0] ** 2
-            + BALL_MOVEMENT_SPEED[1] ** 2
-        )
-        multiplier = 1 - BALL_MOVEMENT_SPEED_DELTA / (
-            ball_movement_speed_vector_size
-            or BALL_MOVEMENT_SPEED_DELTA + 1
-        )
-        if multiplier <= 0:
-            multiplier = 0.5
-        
-        BALL_MOVEMENT_SPEED = (
-            math.ceil(BALL_MOVEMENT_SPEED[0] * multiplier),
-            math.ceil(BALL_MOVEMENT_SPEED[1] * multiplier),
-        )
     
     sio.connect('http://' + master_address + ':5005')
 

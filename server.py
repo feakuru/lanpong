@@ -13,6 +13,7 @@ from config import (
     PAD_SIZE,
     BALL_POSITION,
     BALL_MOVEMENT_SPEED,
+    BALL_MOVEMENT_SPEED_DELTA,
     BALL_RADIUS,
 )
 
@@ -36,12 +37,12 @@ def move_ball():
             - BALL_MOVEMENT_SPEED[1]
         )
     if (
-            0 
+            0
             < new_ball_position[0] 
             < WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2):
         BALL_POSITION = new_ball_position
     else:
-        if new_ball_position[0] >= WINDOW_DIMENSIONS[0] - BALL_RADIUS / 2:
+        if new_ball_position[0] >= WINDOW_DIMENSIONS[0] - BALL_RADIUS:
             score += 1
         BALL_POSITION = (
             RIGHT_PAD_POSITION[0] - BALL_RADIUS * 2,
@@ -84,6 +85,38 @@ def move_ball():
             ) // 16
         )
 
+
+def speed_ball_up():
+    global BALL_MOVEMENT_SPEED
+
+    delta_x = int(BALL_MOVEMENT_SPEED_DELTA / 2)
+    if BALL_MOVEMENT_SPEED[0] < 0:
+        delta_x = -delta_x
+
+    delta_y = int(BALL_MOVEMENT_SPEED_DELTA / 2)
+    if BALL_MOVEMENT_SPEED[1] < 0:
+        delta_y = -delta_y
+
+    BALL_MOVEMENT_SPEED = (
+        BALL_MOVEMENT_SPEED[0] + delta_x,
+        BALL_MOVEMENT_SPEED[1] + delta_y,
+    )
+
+def speed_ball_down():
+    global BALL_MOVEMENT_SPEED
+
+    delta_x = int(BALL_MOVEMENT_SPEED_DELTA / 2)
+    if BALL_MOVEMENT_SPEED[0] < 0:
+        delta_x = -delta_x
+
+    delta_y = int(BALL_MOVEMENT_SPEED_DELTA / 2)
+    if BALL_MOVEMENT_SPEED[1] < 0:
+        delta_y = -delta_y
+    
+    BALL_MOVEMENT_SPEED = (
+        max(int(delta_x / 2), BALL_MOVEMENT_SPEED[0] - delta_x),
+        max(int(delta_y / 2), BALL_MOVEMENT_SPEED[1] - delta_y),
+    )
 
 
 def move_left_pad(amount):
@@ -172,23 +205,16 @@ def run_server():
             )
             sio.emit('set_score', {'score': score})
 
-
         @sio.on('right_slave_up')
-        async def speed_ball_up(sid):
-            await sio.emit('speed_ball_up')
+        async def right_slave_up(sid):
+            speed_ball_up()
             log_writer.writerow([str(datetime.now()), 'speed_ball_up'])
             return 200, "OK"
 
-
         @sio.on('right_slave_down')
-        async def speed_ball_down(sid):
-            await sio.emit('speed_ball_down')
+        async def right_slave_down(sid):
+            speed_ball_down()
             log_writer.writerow([str(datetime.now()), 'speed_ball_down'])
-            return 200, "OK"
-        
-        @sio.on('score_up')
-        async def score_up(sid):
-            log_writer.writerow([str(datetime.now()), 'score_up'])
             return 200, "OK"
 
         app = web.Application()
