@@ -1,2 +1,3 @@
 *.py[cob]
 .vscode/
+log.csv
