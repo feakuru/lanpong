@@ -1,4 +1,5 @@
 import csv
+import math
 import socketio
 from datetime import datetime
 from aiohttp import web
@@ -48,6 +49,7 @@ def move_ball():
             RIGHT_PAD_POSITION[0] - BALL_RADIUS * 2,
             RIGHT_PAD_POSITION[1] + PAD_SIZE[1] // 2
         )
+        BALL_MOVEMENT_SPEED = (10, 0)
     
     # handle right pad
     if (
@@ -86,70 +88,24 @@ def move_ball():
         )
 
 
+def sign(x):
+    return -1 if x < 0 else 1
+
+
 def speed_ball_up():
     global BALL_MOVEMENT_SPEED
 
-    delta_x = int(
-        BALL_MOVEMENT_SPEED_DELTA
-        * (
-            BALL_MOVEMENT_SPEED[0]
-            / (
-                BALL_MOVEMENT_SPEED[0]
-                + BALL_MOVEMENT_SPEED[1]
-            )
-        )
-    )
-    if BALL_MOVEMENT_SPEED[0] < 0:
-        delta_x = -delta_x
-
-    delta_y = int(
-        BALL_MOVEMENT_SPEED_DELTA
-        * (
-            BALL_MOVEMENT_SPEED[1]
-            / (
-                BALL_MOVEMENT_SPEED[0]
-                + BALL_MOVEMENT_SPEED[1]
-            )
-        )
-    )
-    if BALL_MOVEMENT_SPEED[1] < 0:
-        delta_y = -delta_y
-
     BALL_MOVEMENT_SPEED = (
-        min(15, BALL_MOVEMENT_SPEED[0] + delta_x),
-        min(2, BALL_MOVEMENT_SPEED[1] + delta_y),
+        math.ceil(BALL_MOVEMENT_SPEED[0] * 1.1) or sign(BALL_MOVEMENT_SPEED[0]),
+        math.ceil(BALL_MOVEMENT_SPEED[1] * 1.2) or sign(BALL_MOVEMENT_SPEED[1]),
     )
 
 def speed_ball_down():
     global BALL_MOVEMENT_SPEED
-
-    delta_x = int(
-        BALL_MOVEMENT_SPEED_DELTA
-        * (
-            BALL_MOVEMENT_SPEED[0]
-            / (
-                BALL_MOVEMENT_SPEED[0]
-                + BALL_MOVEMENT_SPEED[1]
-            )
-        )
-    )
-    if BALL_MOVEMENT_SPEED[0] < 0:
-        delta_x = -delta_x
-
-    delta_y = int(
-        BALL_MOVEMENT_SPEED_DELTA
-        * (
-            BALL_MOVEMENT_SPEED[1]
-            / (
-                BALL_MOVEMENT_SPEED[0]
-                + BALL_MOVEMENT_SPEED[1]
-            )
-        )
-    )
     
     BALL_MOVEMENT_SPEED = (
-        max(2, BALL_MOVEMENT_SPEED[0] - delta_x),
-        max(2, BALL_MOVEMENT_SPEED[1] - delta_y),
+        math.ceil(BALL_MOVEMENT_SPEED[0] * 0.9) or sign(BALL_MOVEMENT_SPEED[0]),
+        math.ceil(BALL_MOVEMENT_SPEED[1] * 0.8) or sign(BALL_MOVEMENT_SPEED[1]),
     )
 
 
@@ -163,7 +119,6 @@ def move_left_pad(amount):
             LEFT_PAD_POSITION[0],
             LEFT_PAD_POSITION[1] + amount
         )
-
 
 
 def run_server():
