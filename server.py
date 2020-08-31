@@ -97,7 +97,7 @@ def speed_ball_up():
 
     BALL_MOVEMENT_SPEED = (
         math.ceil(BALL_MOVEMENT_SPEED[0] * 1.1) or sign(BALL_MOVEMENT_SPEED[0]),
-        math.ceil(BALL_MOVEMENT_SPEED[1] * 1.2) or sign(BALL_MOVEMENT_SPEED[1]),
+        math.ceil(BALL_MOVEMENT_SPEED[1] * 1.1) or sign(BALL_MOVEMENT_SPEED[1]),
     )
 
 def speed_ball_down():
@@ -105,7 +105,7 @@ def speed_ball_down():
     
     BALL_MOVEMENT_SPEED = (
         math.ceil(BALL_MOVEMENT_SPEED[0] * 0.9) or sign(BALL_MOVEMENT_SPEED[0]),
-        math.ceil(BALL_MOVEMENT_SPEED[1] * 0.8) or sign(BALL_MOVEMENT_SPEED[1]),
+        math.ceil(BALL_MOVEMENT_SPEED[1] * 0.9) or sign(BALL_MOVEMENT_SPEED[1]),
     )
 
 
@@ -156,7 +156,7 @@ def run_server():
         @sio.on('left_slave_up')
         async def move_left_pad_up(sid):
             log_writer.writerow([str(datetime.now()), 'move_left_pad_up'])
-            move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
+            move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
             await sio.emit('move_left_pad', {'position': LEFT_PAD_POSITION})
             return 200, "OK"
 
@@ -164,7 +164,7 @@ def run_server():
         async def move_left_pad_down(sid):
             await sio.emit('move_left_pad_down')
             log_writer.writerow([str(datetime.now()), 'move_left_pad_down'])
-            move_left_pad(-LEFT_PAD_MOVEMENT_SPEED)
+            move_left_pad(LEFT_PAD_MOVEMENT_SPEED)
             await sio.emit('move_left_pad', {'position': LEFT_PAD_POSITION})
             return 200, "OK"
 
